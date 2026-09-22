@@ -72,6 +72,6 @@ node src/server.js
 
 ```bash
 # From the project root
-docker build -f backend/nova-agent/Dockerfile -t corsiri-nova-agent .
-docker run -p 8080:8080 --env-file backend/nova-agent/.env corsiri-nova-agent
+docker build -f backend/Dockerfile -t corsiri-nova-agent .
+docker run -p 8080:8080 --env-file .env corsiri-nova-agent
 ```

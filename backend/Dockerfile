@@ -2,10 +2,10 @@ FROM node:20-bookworm-slim
 
 WORKDIR /app
 
-COPY backend/nova-agent/package*.json ./
+COPY backend/package*.json ./
 RUN npm ci --omit=dev
 
-COPY backend/nova-agent/src ./src
+COPY backend/src ./src
 COPY shared/ipc-protocol ./shared/ipc-protocol
 
 ENV NODE_ENV=production

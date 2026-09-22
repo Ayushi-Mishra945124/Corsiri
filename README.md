@@ -65,10 +65,10 @@ Output
 
 ```
 corsiri-nova/
- backend/nova-agent/          # Node.js Nova backend (AWS Bedrock)
+ backend/                     # Node.js backend (Groq AI)
     src/
-       services/            # Modular Nova service layer
-          bedrockClient.js     # Singleton Bedrock client
+       services/            # Modular service layer
+          groqClient.js        # Singleton Groq client
           novaAgent.js         # inferIntent, analyzeSelection, generateActionPlan
           novaVoice.js         # transcribeOrProcessVoice, attachSonicGateway
           novaEmbeddings.js    # embedText, embedImage, rankOrEmbedContext
@@ -79,7 +79,7 @@ corsiri-nova/
           embed.js             # POST /embed
        app.js               # Express app + legacy routes
        server.js            # HTTP server + startup validation
-       startupCheck.js      # Bedrock connectivity check on boot
+       startupCheck.js      # Groq connectivity check on boot
     .env.example
     Dockerfile
     package.json
@@ -91,7 +91,7 @@ corsiri-nova/
  plugin/logitech-plugin/      # Logitech MX Creative Console integration (C#)
  shared/ipc-protocol/         # JSON schema contracts
  docs/                        # Architecture, deployment, build post
- scripts/                     # run-demo.ps1, smoke-test.ps1, deploy-aws.ps1
+ scripts/                     # run-demo.ps1, smoke-test.ps1
 ```
 
 ---
@@ -103,20 +103,19 @@ corsiri-nova/
 - Windows 10 or 11
 - Node.js 20+
 - .NET 8 SDK
-- AWS account with Bedrock access (Nova 2 Lite + Nova 2 Sonic enabled under Model Access)
+- Groq API Key (`gsk_...`)
 
 ### 1. Configure credentials
 
 ```bash
-cd backend/nova-agent
 cp .env.example .env
-# Fill in AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
+# Fill in GROQ_API_KEY in .env
 ```
 
 ### 2. Start the backend
 
 ```bash
-cd backend/nova-agent
+cd backend
 npm install
 node src/server.js
 ```

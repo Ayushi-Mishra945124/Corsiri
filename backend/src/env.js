@@ -6,9 +6,14 @@ try {
   process.loadEnvFile();
 } catch {}
 
+// Load from backend folder (.env) if present
+try {
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+  process.loadEnvFile(path.resolve(currentDir, "../.env"));
+} catch {}
+
 // Load from project root directory (.env)
 try {
   const currentDir = path.dirname(fileURLToPath(import.meta.url));
-  const rootEnv = path.resolve(currentDir, "../../../.env");
-  process.loadEnvFile(rootEnv);
+  process.loadEnvFile(path.resolve(currentDir, "../../.env"));
 } catch {}

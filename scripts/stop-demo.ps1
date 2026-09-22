@@ -12,7 +12,7 @@ if ($Help) {
 }
 
 $patterns = @(
-    "backend\nova-agent\src\server.js",
+    "backend\src\server.js",
     "node src/server.js",
     "cmd.exe /d /s /c node src/server.js",
     "desktop\browser-action-agent\src\server.js",

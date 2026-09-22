@@ -194,7 +194,7 @@ Key message types:
 
 ```
 corsiri-nova/
- backend/nova-agent/          # Node.js Nova backend (AWS Bedrock)
+ backend/                     # Node.js backend (Groq AI)
     src/
        services/
           bedrockClient.js
