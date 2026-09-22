@@ -1,40 +1,24 @@
-# Corsiri Nova Agent
+# Corsiri Backend Agent
 
-Amazon Nova-powered backend for Corsiri. Powered by:
+Groq LPU-powered backend service for Corsiri. Powered by:
 
-- **Nova 2 Lite** — text/multimodal analysis via Bedrock Converse API
-- **Nova 2 Sonic** — real-time voice via Bedrock bidirectional streaming
-- **Nova Act** — UI automation (Python SDK, separate service)
+- **GPT-OSS 120B / 20B** — ultra-fast text reasoning, intent routing, and response generation
+- **Qwen 3.8 27B Vision** — multimodal image and screen capture analysis
+- **Whisper Turbo** — sub-second audio transcription & voice commands
 
 ## Prerequisites
 
 - Node.js 20+
-- AWS account with Bedrock access
-- Nova 2 Lite and Nova 2 Sonic models enabled in your AWS region
-
-## AWS Credentials Setup
-
-1. Go to [AWS IAM Console](https://console.aws.amazon.com/iam/)
-2. Create a user or role with the `AmazonBedrockFullAccess` policy (or a scoped policy allowing `bedrock:InvokeModel` and `bedrock:InvokeModelWithBidirectionalStream`)
-3. Generate an Access Key and Secret Access Key
-
-## Enable Nova Models in Bedrock
-
-1. Go to [Amazon Bedrock Console](https://console.aws.amazon.com/bedrock/) → Model access
-2. Request access to **Amazon Nova 2 Lite** and **Amazon Nova 2 Sonic**
-3. Wait for approval (usually instant)
-
-## Nova Act API Key
-
-1. Visit [https://nova.amazon.com/act](https://nova.amazon.com/act)
-2. Sign in with your AWS account
-3. Generate an API key from the dashboard
+- Groq LPU API Key (`gsk_...`)
 
 ## Setup
 
 ```bash
+# From project root
 cp .env.example .env
-# Fill in your credentials in .env
+# Fill in GROQ_API_KEY in .env
+
+cd backend
 npm install
 node src/server.js
 ```
@@ -43,14 +27,11 @@ node src/server.js
 
 | Variable | Description |
 |---|---|
-| `AWS_ACCESS_KEY_ID` | AWS access key |
-| `AWS_SECRET_ACCESS_KEY` | AWS secret key |
-| `AWS_REGION` | AWS region (default: `eu-north-1` / `us-east-1`) |
-| `BEDROCK_TEXT_MODEL_ID` | Nova 2 Lite model ID (default: `amazon.nova-lite-v1:0` / `us.amazon.nova-lite-v1:0`) |
-| `BEDROCK_VOICE_MODEL_ID` | Nova 2 Sonic model ID (default: `amazon.nova-2-sonic-v1:0`) |
-| `BEDROCK_EMBEDDING_MODEL_ID` | Embedding model ID (optional) |
-| `CORSIRI_ENABLE_GROUNDING` | Enable web grounding (default: `true`) |
-| `CORSIRI_LIVE_VOICE_PATH` | WebSocket path for live voice (default: `/live`) |
+| `GROQ_API_KEY` | Groq LPU API key (`gsk_...`) |
+| `GROQ_MODEL` | Primary text model (default: `openai/gpt-oss-120b`) |
+| `GROQ_FALLBACK_MODEL` | Fallback model (default: `openai/gpt-oss-20b`) |
+| `GROQ_VISION_MODEL` | Multimodal vision model (default: `qwen/qwen3.8-27b`) |
+| `GROQ_AUDIO_MODEL` | Voice transcription model (default: `whisper-large-v3-turbo`) |
 | `PORT` | HTTP port (default: `8080`) |
 
 ## API Endpoints
@@ -58,20 +39,17 @@ node src/server.js
 | Method | Path | Description |
 |---|---|---|
 | GET | `/health` | Health check |
-| POST | `/agent` | Main agentic endpoint — structured Nova response |
-| POST | `/analyze` | Analyze selected text/image (legacy, companion uses this) |
+| POST | `/agent` | Main agentic endpoint — structured Groq response |
+| POST | `/analyze` | Analyze selected text/image |
 | POST | `/suggest-actions` | Get action suggestions |
-| POST | `/voice` | Transcribe/process voice input |
+| POST | `/voice` | Transcribe/process voice input via Groq Whisper |
 | POST | `/plan` | Generate browser action plan |
-| POST | `/embed` | Embed and rank context items |
-| POST | `/transcribe` | Transcribe audio (legacy) |
-| POST | `/plan-browser-action` | Plan browser automation steps (legacy) |
-| WS | `/live` | Nova 2 Sonic real-time voice stream |
+| POST | `/embed` | Context ranking and similarity |
 
 ## Docker
 
 ```bash
 # From the project root
-docker build -f backend/Dockerfile -t corsiri-nova-agent .
-docker run -p 8080:8080 --env-file .env corsiri-nova-agent
+docker build -f backend/Dockerfile -t corsiri-agent .
+docker run -p 8080:8080 --env-file .env corsiri-agent
 ```

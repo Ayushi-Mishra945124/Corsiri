@@ -32,7 +32,7 @@ $backendDir = Join-Path $root "backend"
 $browserAgentDir = Join-Path $root "desktop\browser-action-agent"
 $extensionBridgeDir = Join-Path $root "desktop\browser-native-host"
 $companionProject = Join-Path $root "desktop\corsiri-companion\src\Corsiri.Companion\Corsiri.Companion.csproj"
-$bridgeProject = Join-Path $root "plugin\logitech-plugin\src\Corsiri.Logitech.Bridge\Corsiri.Logitech.Bridge.csproj"
+$bridgeProject = Join-Path $root "plugin\src\Corsiri.Logitech.Bridge\Corsiri.Logitech.Bridge.csproj"
 
 Write-Host "Starting Corsiri Groq demo stack..."
 Write-Host "Backend: $backendDir"

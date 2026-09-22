@@ -1,38 +1,38 @@
-# Corsiri — Cursor-Native AI Agent powered by Amazon Nova
+# Corsiri — Cursor-Native AI Agent powered by Groq LPU
 
-> **Selection = Context · Trigger = Intent · Nova = Intelligence**
+> **Selection = Context · Trigger = Intent · Groq = Ultra-Fast Intelligence**
 
-Built for the **Amazon Nova AI Hackathon** on AWS Bedrock.
-
-Corsiri turns your cursor into an AI agent. Select text, an image, or a UI region — press a trigger — and Amazon Nova reasons about what you selected, returns the most useful result, and optionally executes it directly in your browser.
+Corsiri turns your cursor into an AI agent. Select text, an image, or a UI region — press a trigger — and Groq AI reasons about what you selected, returns the most useful result, and optionally executes it directly in your browser in under 600ms.
 
 ---
 
-## Amazon Nova Models
+## Groq LPU AI Models
 
 | Model | Role |
 |---|---|
-| Nova 2 Lite (`amazon.nova-lite-v1:0`) | Text + image reasoning, intent routing, action planning, response generation |
-| Nova 2 Sonic (`amazon.nova-2-sonic-v1:0`) | Real-time voice via Bedrock bidirectional streaming |
-| Nova Multimodal Embeddings | Context ranking and similarity (via `/embed` endpoint) |
+| GPT-OSS 120B (`openai/gpt-oss-120b`) | Primary text reasoning, intent routing, action planning, and response generation |
+| GPT-OSS 20B (`openai/gpt-oss-20b`) | Ultra-fast fallback model for sub-second responses |
+| Qwen 3.8 27B Vision (`qwen/qwen3.8-27b`) | Screen capture region analysis, multimodal vision, and diagram extraction |
+| Whisper Turbo (`whisper-large-v3-turbo`) | High-speed voice transcription and hold-to-talk voice commands |
 
 ---
 
 ## What Corsiri Does
 
-- **Select text** — Nova summarizes, rewrites, translates, explains, debugs, or drafts a reply
-- **Select an image / lasso a screen region** — Nova describes, extracts, or analyzes it
-- **Hold to talk** — Nova 2 Sonic transcribes your voice command and applies it to the selection
-- **Press Take Action** — Nova generates a browser action plan and executes it in your real logged-in tab
+- **Select text** — Groq summarizes, rewrites, translates, explains, debugs, or drafts a reply.
+- **Context-Aware "Fix It"** — Automatically detects Code (Fix bug), Math (Fix calculation), Email (Fix tone), or Writing (Fix grammar).
+- **Select an image / lasso a screen region** — Groq Vision describes, extracts text, or solves formulas visually.
+- **Hold to talk** — Groq Whisper transcribes your voice command and applies it directly to the selection.
+- **Press Take Action** — Groq generates a browser action plan and executes it in your real logged-in tab.
 
-All of this happens in under 3 seconds for typical inputs.
+All of this happens in sub-second latency powered by Groq LPU inference.
 
 ---
 
 ## Architecture
 
 ```
-Logitech MX Trigger / Mock Trigger
+Logitech MX Trigger / Mock Trigger / Global Hotkey (Ctrl+Shift+Space)
         |
 Windows Companion App (WPF / .NET 8)
   - text selection capture
@@ -41,13 +41,13 @@ Windows Companion App (WPF / .NET 8)
   - smart / guided modes
   - voice capture (hold-to-talk)
         |
-Nova Agent Backend (Node.js / AWS Bedrock)
+Corsiri Agent Backend (Node.js / Groq LPU API)
   - POST /agent       main agentic endpoint
   - POST /analyze     legacy companion route
-  - POST /voice       buffered voice transcription
+  - POST /voice       Groq Whisper voice transcription
   - POST /plan        browser action plan generation
-  - POST /embed       multimodal context ranking
-  - WS   /live        Nova 2 Sonic real-time voice stream
+  - POST /embed       context ranking and similarity
+  - WS   /live        real-time voice gateway
         |
 Browser Execution Layer
   - Chromium extension (current logged-in tab)
@@ -64,8 +64,8 @@ Output
 ## Project Structure
 
 ```
-corsiri-nova/
- backend/                     # Node.js backend (Groq AI)
+corsiri/
+ backend/                     # Node.js backend (Groq LPU API)
     src/
        services/            # Modular service layer
           groqClient.js        # Singleton Groq client
@@ -88,9 +88,9 @@ corsiri-nova/
     browser-action-agent/    # Playwright browser executor
     browser-extension-chromium/  # Chromium extension
     browser-native-host/     # Native messaging bridge
- plugin/logitech-plugin/      # Logitech MX Creative Console integration (C#)
+ plugin/                     # Logitech MX Creative Console integration (C#)
  shared/ipc-protocol/         # JSON schema contracts
- docs/                        # Architecture, deployment, build post
+ docs/                        # Architecture and demo scenarios
  scripts/                     # run-demo.ps1, smoke-test.ps1
 ```
 
@@ -121,9 +121,11 @@ node src/server.js
 ```
 
 On startup you will see:
-```
-[startup] Validating AWS Bedrock connection...
-[startup]  Bedrock connection OK — Nova responded: "..."
+```text
+[startup] Validating Groq API connection...
+[startup] API Key : gsk_HyO...0Tqj
+[startup] Model   : openai/gpt-oss-120b (fallback: openai/gpt-oss-20b)
+[startup] ✓ Groq connection OK — Model: openai/gpt-oss-120b responded in 463ms
 [nova-agent] Listening on http://127.0.0.1:8080
 ```
 
@@ -132,27 +134,21 @@ On startup you will see:
 ```bash
 curl -X POST http://localhost:8080/agent \
   -H "Content-Type: application/json" \
-  -d "{\"text\":\"Amazon Nova is a new family of frontier models from AWS.\",\"mode\":\"smart\"}"
+  -d "{\"text\":\"Groq is an ultra-fast LPU inference engine.\",\"mode\":\"smart\"}"
 ```
 
 ### 4. Full demo stack
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\run-demo.ps1 `
-  -AwsAccessKeyId "<KEY>" `
-  -AwsSecretAccessKey "<SECRET>" `
-  -AwsRegion "eu-north-1"
+powershell -ExecutionPolicy Bypass -File .\scripts\run-demo.ps1 -GroqApiKey "gsk_..."
 ```
 
-Starts: Nova backend, browser action agent, companion app.
+Starts: Corsiri backend, browser action agent, companion app.
 
 ### 5. Smoke test
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\smoke-test.ps1 `
-  -AwsAccessKeyId "<KEY>" `
-  -AwsSecretAccessKey "<SECRET>" `
-  -AwsRegion "eu-north-1"
+powershell -ExecutionPolicy Bypass -File .\scripts\smoke-test.ps1 -GroqApiKey "gsk_..."
 ```
 
 ---
@@ -161,15 +157,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\smoke-test.ps1 `
 
 | Variable | Default | Description |
 |---|---|---|
-| `AWS_ACCESS_KEY_ID` | — | AWS access key |
-| `AWS_SECRET_ACCESS_KEY` | — | AWS secret key |
-| `AWS_REGION` | `eu-north-1` | AWS region |
-| `BEDROCK_TEXT_MODEL_ID` | `amazon.nova-lite-v1:0` | Nova 2 Lite model ID |
-| `BEDROCK_VOICE_MODEL_ID` | `amazon.nova-2-sonic-v1:0` | Nova 2 Sonic model ID |
-| `BEDROCK_EMBEDDING_MODEL_ID` | — | Embedding model ID (optional) |
+| `GROQ_API_KEY` | — | Groq LPU API Key (`gsk_...`) |
+| `GROQ_MODEL` | `openai/gpt-oss-120b` | Primary Groq model ID |
+| `GROQ_FALLBACK_MODEL` | `openai/gpt-oss-20b` | Fallback Groq model ID |
+| `GROQ_VISION_MODEL` | `qwen/qwen3.8-27b` | Vision model ID |
+| `GROQ_AUDIO_MODEL` | `whisper-large-v3-turbo` | Audio transcription model ID |
 | `PORT` | `8080` | Backend HTTP port |
-
-> If `eu-north-1` returns a model access error, use `AWS_REGION=us-east-1` and `BEDROCK_TEXT_MODEL_ID=us.amazon.nova-lite-v1:0`
 
 ---
 
@@ -178,15 +171,12 @@ powershell -ExecutionPolicy Bypass -File .\scripts\smoke-test.ps1 `
 | Method | Path | Description |
 |---|---|---|
 | GET | `/health` | Service health check |
-| POST | `/agent` | Main agentic endpoint — full structured Nova response |
+| POST | `/agent` | Main agentic endpoint — full structured Groq response |
 | POST | `/analyze` | Analyze text/image selection (companion app route) |
 | POST | `/suggest-actions` | Get ranked action suggestions |
-| POST | `/voice` | Buffered voice transcription via Nova 2 Lite |
-| POST | `/plan` | Generate browser action plan via Nova 2 Lite |
-| POST | `/embed` | Embed and rank context items |
-| POST | `/transcribe` | Audio transcription (legacy) |
-| POST | `/plan-browser-action` | Browser action planning (legacy) |
-| WS | `/live` | Nova 2 Sonic real-time bidirectional voice stream |
+| POST | `/voice` | Groq Whisper voice transcription |
+| POST | `/plan` | Generate browser action plan |
+| POST | `/embed` | Context ranking and similarity |
 
 ### Example `/agent` response
 
@@ -194,44 +184,26 @@ powershell -ExecutionPolicy Bypass -File .\scripts\smoke-test.ps1 `
 {
   "mode": "smart",
   "intent": "summarize_text",
-  "reasoning_summary": "Nova 2 Lite performed \"summarize_text\" on the selection.",
+  "reasoning_summary": "Groq performed \"summarize_text\" on the selection.",
   "suggested_actions": ["translate_text", "explain", "bullet_points"],
   "result": {
     "type": "summary",
-    "content": "Amazon Nova is AWS's new frontier model family offering advanced intelligence and top price performance."
+    "content": "Groq provides sub-second LPU inference for real-time AI assistance."
   },
   "browser_plan": {
     "preferred_path": "current_tab",
     "fallback_path": "managed_browser",
     "steps": []
   },
-  "latencyMs": 750,
-  "model": "amazon.nova-lite-v1:0",
+  "latencyMs": 463,
+  "model": "openai/gpt-oss-120b",
   "usage": { "inputTokens": 162, "outputTokens": 18 }
 }
 ```
 
 ---
 
-## AWS Deployment
-
-See [docs/DEPLOYMENT_AWS.md](docs/DEPLOYMENT_AWS.md) for full instructions.
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\scripts\deploy-aws.ps1 `
-  -AwsAccountId "123456789012" `
-  -AwsAccessKeyId "<KEY>" `
-  -AwsSecretAccessKey "<SECRET>" `
-  -Region "eu-north-1"
-```
-
-Deploys to AWS ECR + App Runner.
-
----
-
 ## Docs
 
 - [ARCHITECTURE_PLAN.md](ARCHITECTURE_PLAN.md) — full system design
-- [docs/HACKATHON_BUILD_POST.md](docs/HACKATHON_BUILD_POST.md) — how it was built
-- [docs/DEPLOYMENT_AWS.md](docs/DEPLOYMENT_AWS.md) — AWS deployment guide
 - [docs/DEMO_SCENARIOS.md](docs/DEMO_SCENARIOS.md) — demo walkthrough scenarios

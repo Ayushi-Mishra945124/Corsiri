@@ -19,8 +19,8 @@ $patterns = @(
     "desktop\browser-native-host\src\host.js",
     "desktop\corsiri-companion\src\Corsiri.Companion\Corsiri.Companion.csproj",
     "desktop\cursivis-companion\src\Cursivis.Companion\Cursivis.Companion.csproj",
-    "plugin\logitech-plugin\src\Corsiri.Logitech.Bridge\Corsiri.Logitech.Bridge.csproj",
-    "plugin\logitech-plugin\src\Cursivis.Logitech.Bridge\Cursivis.Logitech.Bridge.csproj"
+    "plugin\src\Corsiri.Logitech.Bridge\Corsiri.Logitech.Bridge.csproj",
+    "plugin\src\Cursivis.Logitech.Bridge\Cursivis.Logitech.Bridge.csproj"
 )
 
 $targets = Get-CimInstance Win32_Process | Where-Object {
