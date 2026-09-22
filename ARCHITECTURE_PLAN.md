@@ -180,7 +180,7 @@ Output
 
 ## 5. IPC Protocol
 
-All inter-component communication uses JSON over HTTP or WebSocket. Schemas are defined in `shared/ipc-protocol/`.
+All inter-component communication uses JSON over HTTP or WebSocket. Schemas are defined in `shared/schema/`.
 
 Key message types:
 - `SelectionPayload` — text, image bytes, mode, source app
@@ -218,7 +218,7 @@ corsiri-nova/
     browser-extension-chromium/  # Chromium extension (MV3)
     browser-native-host/         # Native messaging bridge
  plugin/logitech-plugin/         # Logitech MX Creative Console (C#)
- shared/ipc-protocol/            # JSON schema contracts
+ shared/                        # JSON schema contracts
  docs/
     DEPLOYMENT_AWS.md
     HACKATHON_BUILD_POST.md

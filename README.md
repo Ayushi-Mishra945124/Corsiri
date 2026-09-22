@@ -89,7 +89,7 @@ corsiri/
     browser-extension-chromium/  # Chromium extension
     browser-native-host/     # Native messaging bridge
  plugin/                     # Logitech MX Creative Console integration (C#)
- shared/ipc-protocol/         # JSON schema contracts
+ shared/                     # JSON schema contracts
  docs/                        # Architecture and demo scenarios
  scripts/                     # run-demo.ps1, smoke-test.ps1
 ```

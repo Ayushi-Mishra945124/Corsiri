@@ -9,10 +9,12 @@ const __dirname = path.dirname(__filename);
 
 function resolveSchemaDir() {
   const candidates = [
-    path.resolve(__dirname, "..", "..", "..", "shared", "ipc-protocol", "schema"),
-    path.resolve(__dirname, "..", "shared", "ipc-protocol", "schema"),
-    path.resolve(process.cwd(), "shared", "ipc-protocol", "schema"),
-    path.resolve(process.cwd(), "..", "..", "shared", "ipc-protocol", "schema")
+    path.resolve(__dirname, "..", "shared", "schema"),
+    path.resolve(__dirname, "..", "..", "shared", "schema"),
+    path.resolve(__dirname, "..", "..", "..", "shared", "schema"),
+    path.resolve(process.cwd(), "shared", "schema"),
+    path.resolve(process.cwd(), "..", "shared", "schema"),
+    path.resolve(process.cwd(), "..", "..", "shared", "schema")
   ];
 
   for (const candidate of candidates) {
@@ -42,9 +44,13 @@ export function createSchemaValidators() {
 
   const requestSchema = loadSchema("agent-request.schema.json");
   const responseSchema = loadSchema("agent-response.schema.json");
+  const intentSchema = loadSchema("intent-memory.schema.json");
+  const triggerSchema = loadSchema("trigger-event.schema.json");
 
   return {
     validateRequest: ajv.compile(requestSchema),
-    validateResponse: ajv.compile(responseSchema)
+    validateResponse: ajv.compile(responseSchema),
+    validateIntent: ajv.compile(intentSchema),
+    validateTrigger: ajv.compile(triggerSchema)
   };
 }

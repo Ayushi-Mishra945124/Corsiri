@@ -6,7 +6,7 @@ COPY backend/package*.json ./
 RUN npm ci --omit=dev
 
 COPY backend/src ./src
-COPY shared/ipc-protocol ./shared/ipc-protocol
+COPY shared ./shared
 
 ENV NODE_ENV=production
 ENV PORT=8080
