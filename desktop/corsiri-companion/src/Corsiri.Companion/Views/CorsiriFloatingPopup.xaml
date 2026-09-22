@@ -1,0 +1,430 @@
+<Window x:Class="Corsiri.Companion.Views.CorsiriFloatingPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Corsiri Quick Action"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        SizeToContent="WidthAndHeight"
+        MinWidth="290"
+        MaxWidth="420"
+        MaxHeight="560"
+        KeyDown="Window_OnKeyDown">
+    <Window.Resources>
+        <Storyboard x:Key="FadeInStoryboard">
+            <DoubleAnimation Storyboard.TargetProperty="Opacity" From="0.0" To="1.0" Duration="0:0:0.18" />
+            <DoubleAnimation Storyboard.TargetName="PopupTranslate" Storyboard.TargetProperty="Y" From="10" To="0" Duration="0:0:0.18" />
+        </Storyboard>
+
+        <Style x:Key="ActionItemButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#55111B27" />
+            <Setter Property="Foreground" Value="{StaticResource Brush.TextMain}" />
+            <Setter Property="BorderBrush" Value="#33B6D7FF" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="12,10" />
+            <Setter Property="Margin" Value="0,3" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="ButtonBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="12"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#881D334B" />
+                                <Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{StaticResource Brush.Cyan}" />
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="ButtonBorder" Property="Background" Value="#AA264669" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="LangPillButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="#44172737" />
+            <Setter Property="Foreground" Value="{StaticResource Brush.TextMain}" />
+            <Setter Property="BorderBrush" Value="#447F97AA" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="Margin" Value="3" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="PillBorder"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="14"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="PillBorder" Property="Background" Value="#77203A56" />
+                                <Setter TargetName="PillBorder" Property="BorderBrush" Value="{StaticResource Brush.Cyan}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border x:Name="RootBorder"
+            Background="#EE09131F"
+            BorderBrush="#44B6D7FF"
+            BorderThickness="1"
+            CornerRadius="18"
+            Padding="14"
+            Margin="10">
+        <Border.RenderTransform>
+            <TranslateTransform x:Name="PopupTranslate" Y="0" />
+        </Border.RenderTransform>
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="28"
+                              ShadowDepth="0"
+                              Color="#D0000000"
+                              Opacity="0.88" />
+        </Border.Effect>
+
+        <Grid x:Name="MainContainer">
+            <!-- Header Bar -->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Draggable Header -->
+            <Border Grid.Row="0"
+                    Background="Transparent"
+                    Cursor="SizeAll"
+                    MouseLeftButtonDown="Header_OnMouseLeftButtonDown"
+                    Margin="0,0,0,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Border Width="8" Height="8" CornerRadius="4" Background="{StaticResource Brush.Cyan}" Margin="0,0,8,0" />
+                        <TextBlock Text="CORSIRI"
+                                   FontSize="11"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource Brush.Cyan}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- Close Button -->
+                    <Button Grid.Column="1"
+                            Width="22" Height="22"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="#99FFFFFF"
+                            Cursor="Hand"
+                            Click="CloseButton_OnClick"
+                            ToolTip="Close (Esc)">
+                        <TextBlock Text="✕" FontSize="11" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Content Area: Panels for each View State -->
+            <Grid Grid.Row="1">
+                <!-- 1. MENU VIEW (Default: 6 Quick Actions) -->
+                <StackPanel x:Name="MenuView" Visibility="Visible" Width="270">
+                    <!-- Selected Text Snippet Card -->
+                    <Border Background="#440F1824"
+                            BorderBrush="#25FFFFFF"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            Padding="10,8"
+                            Margin="0,0,0,10">
+                        <StackPanel>
+                            <TextBlock Text="SELECTED CONTEXT"
+                                       FontSize="9"
+                                       Foreground="{StaticResource Brush.TextSoft}"
+                                       FontWeight="SemiBold" />
+                            <TextBlock x:Name="SelectedSnippetText"
+                                       Text="No text selected"
+                                       FontSize="12"
+                                       Foreground="{StaticResource Brush.TextMain}"
+                                       TextTrimming="CharacterEllipsis"
+                                       MaxHeight="36"
+                                       Margin="0,3,0,0" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Six Action Buttons -->
+                    <Button Style="{StaticResource ActionItemButtonStyle}" Click="VoiceAction_OnClick">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="🎙" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="Take Voice Command" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="6,0,0,0" />
+                        </Grid>
+                    </Button>
+
+                    <Button Style="{StaticResource ActionItemButtonStyle}" Click="SearchAction_OnClick">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="🔍" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="Google Search" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="6,0,0,0" />
+                        </Grid>
+                    </Button>
+
+                    <Button Style="{StaticResource ActionItemButtonStyle}" Click="ExplainAction_OnClick">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="✨" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="Explain" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="6,0,0,0" />
+                        </Grid>
+                    </Button>
+
+                    <Button Style="{StaticResource ActionItemButtonStyle}" Click="TranslateAction_OnClick">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="🌐" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="Translate" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="6,0,0,0" />
+                        </Grid>
+                    </Button>
+
+                    <Button Style="{StaticResource ActionItemButtonStyle}" Click="SummarizeAction_OnClick">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="📝" FontSize="13" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="Summarize" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="6,0,0,0" />
+                        </Grid>
+                    </Button>
+
+                    <Button Style="{StaticResource ActionItemButtonStyle}" Click="ChatbotAction_OnClick">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="28" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="💬" FontSize="14" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                            <TextBlock Grid.Column="1" Text="Copy to Chatbot" FontSize="13" FontWeight="SemiBold" VerticalAlignment="Center" Margin="6,0,0,0" />
+                        </Grid>
+                    </Button>
+                </StackPanel>
+
+                <!-- 2. TRANSLATE LANGUAGE SELECTOR VIEW -->
+                <StackPanel x:Name="TranslateView" Visibility="Collapsed" Width="300">
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Style="{StaticResource PillButtonStyle}"
+                                Content="← Back"
+                                Click="BackButton_OnClick"
+                                Margin="0,0,8,0"
+                                Padding="8,4" />
+                        <TextBlock Grid.Column="1"
+                                   Text="Translate to:"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+
+                    <WrapPanel Margin="0,4,0,10">
+                        <Button Style="{StaticResource LangPillButtonStyle}" Content="English" Click="LangButton_OnClick" Tag="English" />
+                        <Button Style="{StaticResource LangPillButtonStyle}" Content="Hindi" Click="LangButton_OnClick" Tag="Hindi" />
+                        <Button Style="{StaticResource LangPillButtonStyle}" Content="Telugu" Click="LangButton_OnClick" Tag="Telugu" />
+                        <Button Style="{StaticResource LangPillButtonStyle}" Content="Spanish" Click="LangButton_OnClick" Tag="Spanish" />
+                        <Button Style="{StaticResource LangPillButtonStyle}" Content="French" Click="LangButton_OnClick" Tag="French" />
+                        <Button Style="{StaticResource LangPillButtonStyle}" Content="German" Click="LangButton_OnClick" Tag="German" />
+                    </WrapPanel>
+
+                    <TextBlock Text="More languages:" FontSize="11" Foreground="{StaticResource Brush.TextSoft}" Margin="2,0,0,4" />
+                    <ComboBox x:Name="MoreLanguagesCombo"
+                              Style="{StaticResource GlassComboBoxStyle}"
+                              SelectionChanged="MoreLanguagesCombo_OnSelectionChanged">
+                        <ComboBoxItem Content="Japanese" Tag="Japanese" />
+                        <ComboBoxItem Content="Chinese" Tag="Chinese" />
+                        <ComboBoxItem Content="Russian" Tag="Russian" />
+                        <ComboBoxItem Content="Arabic" Tag="Arabic" />
+                        <ComboBoxItem Content="Portuguese" Tag="Portuguese" />
+                        <ComboBoxItem Content="Italian" Tag="Italian" />
+                        <ComboBoxItem Content="Korean" Tag="Korean" />
+                        <ComboBoxItem Content="Tamil" Tag="Tamil" />
+                        <ComboBoxItem Content="Bengali" Tag="Bengali" />
+                        <ComboBoxItem Content="Marathi" Tag="Marathi" />
+                        <ComboBoxItem Content="Gujarati" Tag="Gujarati" />
+                        <ComboBoxItem Content="Urdu" Tag="Urdu" />
+                    </ComboBox>
+                </StackPanel>
+
+                <!-- 3. VOICE COMMAND VIEW -->
+                <StackPanel x:Name="VoiceView" Visibility="Collapsed" Width="300">
+                    <Grid Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Style="{StaticResource PillButtonStyle}"
+                                Content="← Back"
+                                Click="BackButton_OnClick"
+                                Margin="0,0,8,0"
+                                Padding="8,4" />
+                        <TextBlock Grid.Column="1"
+                                   Text="Voice Instruction"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+
+                    <Border Background="#440D1722"
+                            BorderBrush="#335EEBFF"
+                            BorderThickness="1"
+                            CornerRadius="14"
+                            Padding="16"
+                            HorizontalAlignment="Center"
+                            Margin="0,6,0,10">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock x:Name="MicIcon"
+                                       Text="🎙"
+                                       FontSize="28"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock x:Name="VoiceStatusText"
+                                       Text="Listening... Speak your instruction"
+                                       FontSize="12"
+                                       Foreground="{StaticResource Brush.Cyan}"
+                                       Margin="0,8,0,0"
+                                       HorizontalAlignment="Center" />
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Instruction input / transcript -->
+                    <TextBox x:Name="VoiceInstructionInput"
+                             Style="{StaticResource GlassTextBoxStyle}"
+                             MinHeight="48"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             Margin="0,0,0,10" />
+
+                    <Button Style="{StaticResource AccentButtonStyle}"
+                            Content="Execute Voice Command"
+                            Click="ExecuteVoiceCommand_OnClick"
+                            HorizontalAlignment="Stretch" />
+                </StackPanel>
+
+                <!-- 4. RESULT VIEW (In-Popup Dynamic Display) -->
+                <StackPanel x:Name="ResultView" Visibility="Collapsed" Width="340">
+                    <!-- Top Action Bar -->
+                    <Grid Margin="0,0,0,8">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Button Style="{StaticResource PillButtonStyle}"
+                                Content="← Back"
+                                Click="BackButton_OnClick"
+                                Margin="0,0,8,0"
+                                Padding="8,4" />
+                        <TextBlock x:Name="ResultTitleText"
+                                   Grid.Column="1"
+                                   Text="Result"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center" />
+                    </Grid>
+
+                    <!-- Loading Spinner -->
+                    <StackPanel x:Name="ResultLoadingPanel"
+                                Visibility="Collapsed"
+                                Margin="0,20"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="✨" FontSize="22" HorizontalAlignment="Center" />
+                        <TextBlock Text="Corsiri is thinking..."
+                                   FontSize="12"
+                                   Foreground="{StaticResource Brush.Cyan}"
+                                   Margin="0,8,0,0"
+                                   HorizontalAlignment="Center" />
+                    </StackPanel>
+
+                    <!-- Result ScrollViewer -->
+                    <Border x:Name="ResultContentBorder"
+                            Background="#330B141E"
+                            BorderBrush="#25FFFFFF"
+                            BorderThickness="1"
+                            CornerRadius="12"
+                            Padding="12"
+                            MaxHeight="260"
+                            Margin="0,0,0,10">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <TextBox x:Name="ResultBodyText"
+                                     IsReadOnly="True"
+                                     TextWrapping="Wrap"
+                                     Background="Transparent"
+                                     BorderThickness="0"
+                                     Foreground="{StaticResource Brush.TextMain}"
+                                     FontSize="13"
+                                     FontFamily="Bahnschrift" />
+                        </ScrollViewer>
+                    </Border>
+
+                    <!-- Footer Buttons -->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+
+                        <Button x:Name="CopyResultButton"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Content="📋 Copy"
+                                Margin="0,0,4,0"
+                                Click="CopyResultButton_OnClick" />
+
+                        <Button x:Name="RegenerateButton"
+                                Grid.Column="1"
+                                Style="{StaticResource PrimaryButtonStyle}"
+                                Content="🔄 Regenerate"
+                                Margin="4,0,4,0"
+                                Click="RegenerateButton_OnClick" />
+
+                        <Button x:Name="SendToChatbotButton"
+                                Grid.Column="2"
+                                Style="{StaticResource AccentButtonStyle}"
+                                Content="💬 Chat"
+                                Margin="4,0,0,0"
+                                Padding="10,6"
+                                Click="SendToChatbotButton_OnClick"
+                                ToolTip="Continue with this in Chatbot" />
+                    </Grid>
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Border>
+</Window>

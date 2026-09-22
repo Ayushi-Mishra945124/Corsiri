@@ -1,0 +1,349 @@
+﻿<Window x:Class="Corsiri.Companion.Views.OrbOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Height="360"
+        ShowActivated="False"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Width="360"
+        WindowStyle="None"
+        Loaded="Window_OnLoaded">
+    <Grid>
+        <Canvas Width="360" Height="360">
+            <Border x:Name="DragHandle"
+                    Width="92"
+                    Height="24"
+                    CornerRadius="12"
+                    Canvas.Left="134"
+                    Canvas.Top="6"
+                    Background="#A60A121C"
+                    BorderBrush="#55FFFFFF"
+                    BorderThickness="1"
+                    Cursor="SizeAll"
+                    MouseLeftButtonDown="DragHandle_OnMouseLeftButtonDown">
+                <TextBlock HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           FontSize="10"
+                           FontFamily="Bahnschrift SemiBold"
+                           Foreground="#E4F1FFFF"
+                           Text="DRAG ORB" />
+            </Border>
+
+            <Border x:Name="ActionChipTop"
+                    Width="106"
+                    Height="38"
+                    CornerRadius="19"
+                    Canvas.Left="127"
+                    Canvas.Top="34"
+                    IsHitTestVisible="False"
+                    Background="#BA111C27"
+                    BorderBrush="#40FFFFFF"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12"
+                                      ShadowDepth="0"
+                                      Color="#8048B8FF"
+                                      Opacity="0.45" />
+                </Border.Effect>
+                <TextBlock x:Name="ActionTopText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="11"
+                           FontFamily="Bahnschrift SemiBold"
+                           Text="Summarize" />
+            </Border>
+
+            <Border x:Name="ActionChipUpperRight"
+                    Width="106"
+                    Height="38"
+                    CornerRadius="19"
+                    Canvas.Left="247"
+                    Canvas.Top="108"
+                    IsHitTestVisible="False"
+                    Background="#BA111C27"
+                    BorderBrush="#40FFFFFF"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12"
+                                      ShadowDepth="0"
+                                      Color="#80F562E7"
+                                      Opacity="0.35" />
+                </Border.Effect>
+                <TextBlock x:Name="ActionUpperRightText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="11"
+                           FontFamily="Bahnschrift SemiBold"
+                           Text="Rewrite" />
+            </Border>
+
+            <Border x:Name="ActionChipLowerRight"
+                    Width="106"
+                    Height="38"
+                    CornerRadius="19"
+                    Canvas.Left="247"
+                    Canvas.Top="246"
+                    IsHitTestVisible="False"
+                    Background="#BA111C27"
+                    BorderBrush="#40FFFFFF"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12"
+                                      ShadowDepth="0"
+                                      Color="#805EEBFF"
+                                      Opacity="0.35" />
+                </Border.Effect>
+                <TextBlock x:Name="ActionLowerRightText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="11"
+                           FontFamily="Bahnschrift SemiBold"
+                           Text="Translate" />
+            </Border>
+
+            <Border x:Name="ActionChipLowerLeft"
+                    Width="106"
+                    Height="38"
+                    CornerRadius="19"
+                    Canvas.Left="7"
+                    Canvas.Top="246"
+                    IsHitTestVisible="False"
+                    Background="#BA111C27"
+                    BorderBrush="#40FFFFFF"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12"
+                                      ShadowDepth="0"
+                                      Color="#80F4D06F"
+                                      Opacity="0.30" />
+                </Border.Effect>
+                <TextBlock x:Name="ActionLowerLeftText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="11"
+                           FontFamily="Bahnschrift SemiBold"
+                           Text="Explain" />
+            </Border>
+
+            <Border x:Name="ActionChipUpperLeft"
+                    Width="106"
+                    Height="38"
+                    CornerRadius="19"
+                    Canvas.Left="7"
+                    Canvas.Top="108"
+                    IsHitTestVisible="False"
+                    Background="#BA111C27"
+                    BorderBrush="#40FFFFFF"
+                    BorderThickness="1">
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="12"
+                                      ShadowDepth="0"
+                                      Color="#805EEBFF"
+                                      Opacity="0.35" />
+                </Border.Effect>
+                <TextBlock x:Name="ActionUpperLeftText"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Foreground="White"
+                           FontSize="11"
+                           FontFamily="Bahnschrift SemiBold"
+                           Text="Bullet Points" />
+            </Border>
+
+            <Grid Width="180"
+                  Height="180"
+                  Canvas.Left="90"
+                  Canvas.Top="90">
+                <Canvas Width="180" Height="180" IsHitTestVisible="False">
+                    <Ellipse x:Name="MagicRing1"
+                             Width="146"
+                             Height="146"
+                             Canvas.Left="17"
+                             Canvas.Top="17"
+                             Stroke="#00F562E7"
+                             StrokeThickness="2"
+                             Opacity="0" />
+                    <Ellipse x:Name="MagicRing2"
+                             Width="156"
+                             Height="156"
+                             Canvas.Left="12"
+                             Canvas.Top="12"
+                             Stroke="#005EEBFF"
+                             StrokeThickness="2"
+                             Opacity="0" />
+                    <Ellipse x:Name="MagicRing3"
+                             Width="166"
+                             Height="166"
+                             Canvas.Left="7"
+                             Canvas.Top="7"
+                             Stroke="#00F9CE73"
+                             StrokeThickness="2"
+                             Opacity="0" />
+                    <Ellipse x:Name="MagicRing4"
+                             Width="174"
+                             Height="174"
+                             Canvas.Left="3"
+                             Canvas.Top="3"
+                             Stroke="#00F562E7"
+                             StrokeThickness="1.5"
+                             Opacity="0" />
+                </Canvas>
+
+                <Ellipse x:Name="VoiceGlowHalo"
+                         Width="220"
+                         Height="220"
+                         Margin="-20"
+                         Opacity="0"
+                         IsHitTestVisible="False">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush GradientOrigin="0.5,0.5">
+                            <GradientStop Color="#C8F562E7" Offset="0" />
+                            <GradientStop Color="#845EEBFF" Offset="0.38" />
+                            <GradientStop Color="#003B5A64" Offset="1" />
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform>
+                        <ScaleTransform x:Name="VoiceGlowScaleTransform" ScaleX="1" ScaleY="1" />
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+
+                <Ellipse x:Name="GlowHalo"
+                         Width="180"
+                         Height="180"
+                         Opacity="0.9">
+                    <Ellipse.Fill>
+                        <RadialGradientBrush GradientOrigin="0.5,0.5">
+                            <GradientStop Color="#AAF562E7" Offset="0" />
+                            <GradientStop Color="#885EEBFF" Offset="0.42" />
+                            <GradientStop Color="#1065A7FF" Offset="1" />
+                        </RadialGradientBrush>
+                    </Ellipse.Fill>
+                    <Ellipse.RenderTransform>
+                        <ScaleTransform x:Name="GlowScaleTransform" ScaleX="1" ScaleY="1" />
+                    </Ellipse.RenderTransform>
+                </Ellipse>
+
+                <Canvas Width="180" Height="180"
+                        IsHitTestVisible="False"
+                        RenderTransformOrigin="0.5,0.5">
+                    <Canvas.RenderTransform>
+                        <RotateTransform x:Name="OrbitRotateTransform" Angle="0" />
+                    </Canvas.RenderTransform>
+
+                    <Ellipse Width="150"
+                             Height="150"
+                             Canvas.Left="15"
+                             Canvas.Top="15"
+                             Stroke="#45FFFFFF"
+                             StrokeThickness="1.4"
+                             StrokeDashArray="2 7" />
+                    <Ellipse Width="166"
+                             Height="166"
+                             Canvas.Left="7"
+                             Canvas.Top="7"
+                             Stroke="#5567DFFF"
+                             StrokeThickness="1.1"
+                             StrokeDashArray="1.5 9" />
+                    <Ellipse Width="10"
+                             Height="10"
+                             Canvas.Left="83"
+                             Canvas.Top="1"
+                             Fill="#FFF562E7">
+                        <Ellipse.Effect>
+                            <DropShadowEffect BlurRadius="12"
+                                              ShadowDepth="0"
+                                              Color="#FFF562E7"
+                                              Opacity="0.95" />
+                        </Ellipse.Effect>
+                    </Ellipse>
+                    <Ellipse Width="8"
+                             Height="8"
+                             Canvas.Left="145"
+                             Canvas.Top="92"
+                             Fill="#FF5EEBFF">
+                        <Ellipse.Effect>
+                            <DropShadowEffect BlurRadius="10"
+                                              ShadowDepth="0"
+                                              Color="#FF5EEBFF"
+                                              Opacity="0.95" />
+                        </Ellipse.Effect>
+                    </Ellipse>
+                </Canvas>
+
+                <Border x:Name="OrbCore"
+                        Width="130"
+                        Height="130"
+                        Background="#DD141B23"
+                        BorderBrush="#88FFFFFF"
+                        BorderThickness="1"
+                        CornerRadius="65"
+                        Cursor="SizeAll"
+                        MouseLeftButtonDown="OrbCore_OnMouseLeftButtonDown"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+                    <Border.Effect>
+                        <DropShadowEffect BlurRadius="22"
+                                          ShadowDepth="0"
+                                          Color="#CC08131F"
+                                          Opacity="0.82" />
+                    </Border.Effect>
+                    <Border.RenderTransform>
+                        <ScaleTransform x:Name="OrbScaleTransform" ScaleX="1" ScaleY="1" />
+                    </Border.RenderTransform>
+                    <Grid>
+                        <Ellipse Margin="7"
+                                 Stroke="#25FFFFFF"
+                                 StrokeThickness="1">
+                            <Ellipse.Fill>
+                                <RadialGradientBrush GradientOrigin="0.3,0.25">
+                                    <GradientStop Color="#FF172636" Offset="0" />
+                                    <GradientStop Color="#FF101B28" Offset="0.58" />
+                                    <GradientStop Color="#FF0B131E" Offset="1" />
+                                </RadialGradientBrush>
+                            </Ellipse.Fill>
+                        </Ellipse>
+
+                        <Border Margin="28,18,28,0"
+                                Height="26"
+                                VerticalAlignment="Top"
+                                CornerRadius="13"
+                                Background="#66151E29"
+                                BorderBrush="#2DFFFFFF"
+                                BorderThickness="1">
+                            <TextBlock x:Name="StateText"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       FontWeight="SemiBold"
+                                       FontSize="12"
+                                       Text="Idle" />
+                        </Border>
+
+                        <TextBlock x:Name="StatusText"
+                                   Margin="18,58,18,16"
+                                   Foreground="#FFFFFFFF"
+                                   FontSize="12"
+                                   FontFamily="Bahnschrift SemiBold"
+                                   HorizontalAlignment="Center"
+                                   Text="Ready"
+                                   TextAlignment="Center"
+                                   TextWrapping="Wrap" />
+
+                        <TextBlock Margin="0,0,0,16"
+                                   VerticalAlignment="Bottom"
+                                   HorizontalAlignment="Center"
+                                   Foreground="#7FD7EFFF"
+                                   FontFamily="Bahnschrift"
+                                   FontSize="10"
+                                   Text="CORSIRI" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Canvas>
+    </Grid>
+</Window>

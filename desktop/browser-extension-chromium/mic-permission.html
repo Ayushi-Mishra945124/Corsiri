@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corsiri AI — Enable Microphone</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #0B0F17;
+      --card-bg: rgba(18, 26, 42, 0.75);
+      --card-border: rgba(94, 235, 255, 0.18);
+      --accent-cyan: #5EEBFF;
+      --accent-blue: #0072FF;
+      --text-main: #FFFFFF;
+      --text-muted: #8FA6B8;
+      --success: #10B981;
+      --warning: #FFDF7E;
+      --danger: #FF6B6B;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 50% 20%, #132238 0%, var(--bg-dark) 75%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 520px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(94, 235, 255, 0.1);
+      padding: 36px 32px;
+      text-align: center;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .mic-icon-wrapper {
+      position: relative;
+      width: 84px;
+      height: 84px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: linear-gradient(135deg, rgba(94, 235, 255, 0.2), rgba(0, 114, 255, 0.2));
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 0 24px rgba(94, 235, 255, 0.35);
+    }
+
+    .mic-icon {
+      font-size: 40px;
+      user-select: none;
+    }
+
+    .pulse-ring {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border-radius: 50%;
+      border: 2px solid var(--accent-cyan);
+      opacity: 0.4;
+      animation: pulse 2.2s infinite ease-out;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.7; }
+      50% { transform: scale(1.1); opacity: 0.2; }
+      100% { transform: scale(0.95); opacity: 0.7; }
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 10px;
+      letter-spacing: -0.3px;
+    }
+
+    p.subtitle {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 26px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      background: rgba(255, 223, 126, 0.12);
+      color: var(--warning);
+      border: 1px solid rgba(255, 223, 126, 0.25);
+    }
+
+    .status-badge.granted {
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--success);
+      border-color: rgba(16, 185, 129, 0.3);
+    }
+
+    .status-badge.denied {
+      background: rgba(255, 107, 107, 0.15);
+      color: var(--danger);
+      border-color: rgba(255, 107, 107, 0.3);
+    }
+
+    .action-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #00C6FF 0%, #0072FF 100%);
+      color: #FFFFFF;
+      border: none;
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      box-shadow: 0 4px 18px rgba(0, 114, 255, 0.42);
+      transition: all 0.2s ease;
+    }
+
+    .action-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(0, 114, 255, 0.6);
+      filter: brightness(1.08);
+    }
+
+    .action-btn:active {
+      transform: translateY(0);
+    }
+
+    .action-btn.btn-close {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow: none;
+      margin-top: 12px;
+    }
+
+    .action-btn.btn-close:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .troubleshoot-card {
+      display: none;
+      margin-top: 24px;
+      text-align: left;
+      background: rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 13px;
+      color: #C8DBE8;
+    }
+
+    .troubleshoot-card h3 {
+      font-size: 13.5px;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+    }
+
+    .troubleshoot-card ol {
+      padding-left: 20px;
+      line-height: 1.6;
+    }
+
+    .troubleshoot-card li {
+      margin-bottom: 6px;
+    }
+
+    .troubleshoot-card code {
+      background: rgba(94, 235, 255, 0.15);
+      color: var(--accent-cyan);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 11.5px;
+    }
+
+    .footer-note {
+      margin-top: 22px;
+      font-size: 12px;
+      color: #6C8296;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="mic-icon-wrapper">
+      <div class="pulse-ring"></div>
+      <div class="mic-icon" id="iconDisplay">🎙️</div>
+    </div>
+
+    <h1 id="headline">Microphone Access for Corsiri AI</h1>
+    <p class="subtitle" id="subtext">
+      Grant microphone permission once so you can use <strong>Hold to Talk</strong>, voice commands, and speech reasoning across any webpage and popup.
+    </p>
+
+    <div class="status-badge" id="statusBadge">
+      <span>●</span>
+      <span id="statusText">Checking microphone permission...</span>
+    </div>
+
+    <div id="actionContainer">
+      <button class="action-btn" id="btnGrantMic">
+        🎙️ Allow Microphone Access
+      </button>
+    </div>
+
+    <div class="troubleshoot-card" id="troubleshootCard">
+      <h3>Need to manually unblock?</h3>
+      <ol>
+        <li>Click the <strong>🔒 lock / tune icon</strong> on the left side of Chrome's address bar.</li>
+        <li>Set <strong>Microphone</strong> from <em>Block</em> to <strong>Allow</strong>.</li>
+        <li>On Windows 10/11: Go to <strong>Windows Settings &gt; Privacy &amp; security &gt; Microphone</strong> and ensure <em>"Let desktop apps access your microphone"</em> is turned <strong>ON</strong>.</li>
+      </ol>
+    </div>
+
+    <div class="footer-note">
+      Your voice audio is only processed locally for speech recognition during active recording.
+    </div>
+  </div>
+
+  <script src="mic-permission.js"></script>
+</body>
+</html>

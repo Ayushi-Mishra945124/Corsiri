@@ -1,0 +1,47 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "desktop", "desktop", "{7B042446-25BD-4A1F-BE25-EF7C422094F0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "corsiri-companion", "corsiri-companion", "{F0B448E2-DC18-419C-8D77-872DF59B3115}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6EDF1414-4E51-44AA-99FC-BF7D60744B2B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsiri.Companion", "desktop\corsiri-companion\src\Corsiri.Companion\Corsiri.Companion.csproj", "{F660F8AB-CE5C-4712-87DB-FE1B2AF31ADC}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "plugin", "plugin", "{0E728185-DB98-4573-9B9B-4BE902ACF40D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "logitech-plugin", "logitech-plugin", "{77D0CF0B-23B3-453E-A70F-54F222226123}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{6F5D6CD5-B0D6-4D65-BFB9-87BC322FE96E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Corsiri.Logitech.Bridge", "plugin\logitech-plugin\src\Corsiri.Logitech.Bridge\Corsiri.Logitech.Bridge.csproj", "{C0139F7A-CE88-45AE-89CB-9385D2CF1227}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F660F8AB-CE5C-4712-87DB-FE1B2AF31ADC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F660F8AB-CE5C-4712-87DB-FE1B2AF31ADC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F660F8AB-CE5C-4712-87DB-FE1B2AF31ADC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F660F8AB-CE5C-4712-87DB-FE1B2AF31ADC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0139F7A-CE88-45AE-89CB-9385D2CF1227}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0139F7A-CE88-45AE-89CB-9385D2CF1227}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0139F7A-CE88-45AE-89CB-9385D2CF1227}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0139F7A-CE88-45AE-89CB-9385D2CF1227}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F0B448E2-DC18-419C-8D77-872DF59B3115} = {7B042446-25BD-4A1F-BE25-EF7C422094F0}
+		{6EDF1414-4E51-44AA-99FC-BF7D60744B2B} = {F0B448E2-DC18-419C-8D77-872DF59B3115}
+		{F660F8AB-CE5C-4712-87DB-FE1B2AF31ADC} = {6EDF1414-4E51-44AA-99FC-BF7D60744B2B}
+		{77D0CF0B-23B3-453E-A70F-54F222226123} = {0E728185-DB98-4573-9B9B-4BE902ACF40D}
+		{6F5D6CD5-B0D6-4D65-BFB9-87BC322FE96E} = {77D0CF0B-23B3-453E-A70F-54F222226123}
+		{C0139F7A-CE88-45AE-89CB-9385D2CF1227} = {6F5D6CD5-B0D6-4D65-BFB9-87BC322FE96E}
+	EndGlobalSection
+EndGlobal

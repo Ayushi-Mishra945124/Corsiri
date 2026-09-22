@@ -1,0 +1,276 @@
+<Window x:Class="Corsiri.Companion.Views.ChatbotWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Corsiri AI Chat"
+        Width="860"
+        Height="680"
+        MinWidth="420"
+        MinHeight="480"
+        SizeChanged="ChatbotWindow_OnSizeChanged"
+        WindowStartupLocation="CenterScreen"
+        Background="#FF081019"
+        Foreground="{StaticResource Brush.TextMain}">
+    <Window.Resources>
+        <Style x:Key="SidebarSessionButtonStyle" TargetType="ListBoxItem">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource Brush.TextMain}" />
+            <Setter Property="Padding" Value="8,8" />
+            <Setter Property="Margin" Value="0,2" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border x:Name="ItemBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#33172737" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="ItemBorder" Property="Background" Value="#661D334B" />
+                                <Setter TargetName="ItemBorder" Property="BorderBrush" Value="{StaticResource Brush.Cyan}" />
+                                <Setter TargetName="ItemBorder" Property="BorderThickness" Value="1" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <!-- Left Sidebar for Chat History -->
+            <ColumnDefinition x:Name="SidebarCol" Width="240" />
+            <ColumnDefinition Width="1" />
+            <!-- Main Chat Area -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- ── SIDEBAR: CHAT HISTORY ─────────────────────────────────────────── -->
+        <Border Grid.Column="0" Background="#FF0B141E" Padding="12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!-- New Chat Button -->
+                <Button Grid.Row="0"
+                        Style="{StaticResource AccentButtonStyle}"
+                        Content="+ New Chat"
+                        FontWeight="Bold"
+                        Click="NewChatButton_OnClick"
+                        Margin="0,0,0,12"
+                        HorizontalAlignment="Stretch" />
+
+                <!-- Sessions List -->
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ListBox x:Name="SessionsList"
+                             Background="Transparent"
+                             BorderThickness="0"
+                             ItemContainerStyle="{StaticResource SidebarSessionButtonStyle}"
+                             SelectionChanged="SessionsList_OnSelectionChanged">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Width="200">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel VerticalAlignment="Center">
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontWeight="SemiBold"
+                                                   FontSize="12"
+                                                   TextTrimming="CharacterEllipsis" />
+                                        <TextBlock Text="{Binding FormattedTime}"
+                                                   FontSize="10"
+                                                   Foreground="{StaticResource Brush.TextSoft}"
+                                                   Margin="0,2,0,0" />
+                                    </StackPanel>
+
+                                    <!-- Rename Button -->
+                                    <Button Grid.Column="1"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="{StaticResource Brush.TextSoft}"
+                                            Cursor="Hand"
+                                            Padding="4"
+                                            ToolTip="Rename chat"
+                                            Click="RenameSession_OnClick">
+                                        <TextBlock Text="✎" FontSize="11" />
+                                    </Button>
+
+                                    <!-- Delete Button -->
+                                    <Button Grid.Column="2"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            Foreground="#99FF6B6B"
+                                            Cursor="Hand"
+                                            Padding="4"
+                                            ToolTip="Delete chat"
+                                            Click="DeleteSession_OnClick">
+                                        <TextBlock Text="🗑" FontSize="11" />
+                                    </Button>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </ScrollViewer>
+
+                <!-- Mode Indicator / Compact Toggle -->
+                <Border Grid.Row="2"
+                        Margin="0,8,0,0"
+                        Padding="8,6"
+                        Background="#33111F2D"
+                        CornerRadius="8">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock x:Name="ModeLabel"
+                                   Text="Standard Mode"
+                                   FontSize="11"
+                                   Foreground="{StaticResource Brush.TextSoft}"
+                                   VerticalAlignment="Center" />
+                        <Button Grid.Column="1"
+                                Style="{StaticResource PillButtonStyle}"
+                                Content="⛶ Toggle Size"
+                                FontSize="10"
+                                Padding="6,2"
+                                Click="ToggleCompactMode_OnClick" />
+                    </Grid>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- Divider -->
+        <Rectangle Grid.Column="1" Fill="#25FFFFFF" />
+
+        <!-- ── MAIN CHAT CONVERSATION AREA ───────────────────────────────────── -->
+        <Grid Grid.Column="2" Background="#FF081019">
+            <Grid.RowDefinitions>
+                <!-- Context Banner (when text selection context is attached) -->
+                <RowDefinition Height="Auto" />
+                <!-- Chat Messages List -->
+                <RowDefinition Height="*" />
+                <!-- Input Area -->
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <!-- Active Context Banner -->
+            <Border x:Name="ContextBanner"
+                    Grid.Row="0"
+                    Visibility="Collapsed"
+                    Background="#335EEBFF"
+                    BorderBrush="#665EEBFF"
+                    BorderThickness="0,0,0,1"
+                    Padding="14,8">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="📌 Context:"
+                               FontWeight="Bold"
+                               FontSize="11"
+                               Foreground="{StaticResource Brush.Cyan}"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0" />
+
+                    <TextBlock x:Name="ContextSnippetText"
+                               Grid.Column="1"
+                               Text="Selected text preview"
+                               FontSize="12"
+                               Foreground="{StaticResource Brush.TextMain}"
+                               TextTrimming="CharacterEllipsis"
+                               VerticalAlignment="Center" />
+
+                    <Button Grid.Column="2"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            Foreground="{StaticResource Brush.TextSoft}"
+                            Cursor="Hand"
+                            Click="DismissContext_OnClick"
+                            ToolTip="Remove Context">
+                        <TextBlock Text="✕" FontSize="11" Margin="6,0,0,0" />
+                    </Button>
+                </Grid>
+            </Border>
+
+            <!-- Chat Messages Stream -->
+            <ScrollViewer x:Name="MessagesScrollViewer"
+                          Grid.Row="1"
+                          Padding="16,14"
+                          VerticalScrollBarVisibility="Auto">
+                <StackPanel x:Name="MessagesPanel">
+                    <!-- Welcome Placeholder -->
+                    <Border x:Name="WelcomeCard"
+                            Background="#22111F2D"
+                            BorderBrush="#25FFFFFF"
+                            BorderThickness="1"
+                            CornerRadius="16"
+                            Padding="20"
+                            Margin="20,40"
+                            HorizontalAlignment="Center"
+                            MaxWidth="480">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="✨ Corsiri AI Chat"
+                                       FontSize="18"
+                                       FontWeight="Bold"
+                                       Foreground="{StaticResource Brush.Cyan}"
+                                       HorizontalAlignment="Center" />
+                            <TextBlock Text="Ask questions, analyze documents, rewrite text, or explore your screen selections with conversational AI."
+                                       FontSize="12"
+                                       Foreground="{StaticResource Brush.TextMuted}"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       Margin="0,8,0,0" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- Input Box & Send Controls -->
+            <Border Grid.Row="2"
+                    Background="#FF0B141E"
+                    BorderBrush="#25FFFFFF"
+                    BorderThickness="0,1,0,0"
+                    Padding="14,10">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="MessageInput"
+                             Style="{StaticResource GlassTextBoxStyle}"
+                             MinHeight="42"
+                             MaxHeight="120"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             KeyDown="MessageInput_OnKeyDown"
+                             Margin="0,0,8,0" />
+
+                    <Button x:Name="SendButton"
+                            Grid.Column="1"
+                            Style="{StaticResource AccentButtonStyle}"
+                            Content="➤ Send"
+                            Padding="16,8"
+                            VerticalAlignment="Bottom"
+                            Click="SendButton_OnClick" />
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

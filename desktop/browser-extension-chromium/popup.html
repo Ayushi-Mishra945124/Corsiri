@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MX Creative Console</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="mx-console-app">
+    <!-- Card 0: Header -->
+    <div class="mx-card mx-header-card">
+      <div class="mx-title-row">
+        <h2 class="mx-title">MX Creative Console</h2>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <span class="mx-badge">Extension-Native</span>
+          <button id="openSettingsBtn" class="mx-exit-btn" title="Open extension options" style="font-size: 11px; padding: 2px 7px; cursor: pointer;">⚙ Settings</button>
+        </div>
+      </div>
+      <p class="mx-subtitle">Corsiri turns selection into context, hardware into intent, and Groq into action.</p>
+    </div>
+
+    <!-- Hidden Interaction Mode Container (Preserved for internal compatibility) -->
+    <div class="mx-card mx-mode-card" style="display: none;">
+      <select class="mx-select" id="mxModeSelect">
+        <option value="guided" selected>Guided Mode (Manual)</option>
+        <option value="smart">Smart Mode (AutoPerform)</option>
+      </select>
+    </div>
+
+    <!-- Card 2: Trigger Surface -->
+    <div class="mx-card mx-trigger-card">
+      <div class="mx-label">Trigger Surface</div>
+      <div class="mx-desc">Tap for contextual AI, hold for voice, and capture an image region on demand.</div>
+      
+      <div class="mx-btn-grid">
+        <button class="mx-action-btn mx-btn-trigger" id="mxBtnTrigger">⚡ Trigger</button>
+        <button class="mx-action-btn mx-btn-take-action" id="mxBtnTakeAction">🎯 Take Action</button>
+        <button class="mx-action-btn mx-btn-voice" id="mxBtnVoice">🎙 Hold to Talk</button>
+        <button class="mx-action-btn mx-btn-image" id="mxBtnImage">📸 Image Selection</button>
+      </div>
+      <div class="mx-chatbot-btn-row">
+        <button class="mx-chatbot-toggle-btn" id="mxBtnOpenChatbot">💬 Open AI Chatbot</button>
+        <button class="mx-chatbot-toggle-btn mx-btn-copy-to-chat" id="mxBtnCopyTextToChatbot">📋 Copy to Chatbot</button>
+      </div>
+    </div>
+
+    <!-- Card: Context Awareness & Smart Actions -->
+    <div class="mx-card mx-context-card" id="mxContextCard">
+      <div class="mx-context-header-row">
+        <div class="mx-label">Contextual Intelligence</div>
+        <span class="mx-context-type-badge" id="mxContextTypeBadge">📄 Normal Text</span>
+      </div>
+      <div class="mx-desc" id="mxContextDesc">Actions dynamically adapted for selected content:</div>
+      <div class="mx-context-pills-grid" id="mxContextPillsGrid">
+        <button type="button" class="mx-context-pill active" data-action="explain">✨ Explain</button>
+        <button type="button" class="mx-context-pill" data-action="translate" data-sub="translate">🌐 Translate</button>
+        <button type="button" class="mx-context-pill" data-action="summarize">📝 Summarize</button>
+        <button type="button" class="mx-context-pill" data-action="search" data-util="true">🔍 Search</button>
+      </div>
+    </div>
+
+    <!-- Card: Redesigned Take Action Panel -->
+    <div class="mx-card mx-take-action-card" id="mxTakeActionCard">
+      <div class="mx-label-row">
+        <div class="mx-label">Take Action</div>
+        <span class="mx-take-action-subtitle">Temporary Context & Tools</span>
+      </div>
+      <div class="mx-action-grid" id="mxTakeActionGrid">
+        <button type="button" class="mx-take-pill" id="mxBtnMultiCopy" data-sub="multicopy">
+          <span>📋 Multi-Copy</span>
+          <span class="mx-counter-badge" id="mxMultiCopyBadge" style="display:none;">0</span>
+        </button>
+        <button type="button" class="mx-take-pill" id="mxBtnClearMulti" data-sub="clear">
+          <span>🗑 Clear</span>
+        </button>
+        <button type="button" class="mx-take-pill" id="mxBtnGenReply" data-sub="reply">
+          <span>✍ Generate Reply</span>
+        </button>
+        <button type="button" class="mx-take-pill" id="mxBtnTranslate" data-sub="translate">
+          <span>🌐 Translate</span>
+        </button>
+      </div>
+
+      <!-- Subpanel 1: Multi-Copy Workspace -->
+      <div class="mx-action-subpanel" id="mxMultiCopySubpanel" style="display:none;">
+        <div class="mx-subpanel-header">
+          <div class="mx-subpanel-title">
+            <strong>📋 Multi-Copy Context</strong>
+            <span class="mx-subpanel-count" id="mxMultiCopyCountText">0 items collected</span>
+          </div>
+          <button type="button" class="mx-subpanel-add-btn" id="mxAddSelectionBtn">+ Add Selection</button>
+        </div>
+        <div class="mx-multicopy-list" id="mxMultiCopyList">
+          <div class="mx-empty-hint">No items collected yet. Highlight text and click "+ Add Selection" or "Multi-Copy" to aggregate context.</div>
+        </div>
+        <div class="mx-multicopy-footer">
+          <textarea class="mx-multicopy-prompt" id="mxMultiCopyPrompt" rows="2" placeholder="Ask Cursiv about all collected selections together (e.g. Explain these together in simple language)..."></textarea>
+          <div class="mx-multicopy-btn-row">
+            <button type="button" class="mx-ask-cursiv-btn" id="mxAskCursivBtn">⚡ Ask Cursiv</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subpanel 2: Clear Confirmation -->
+      <div class="mx-action-subpanel" id="mxClearSubpanel" style="display:none;">
+        <div class="mx-clear-confirm-box">
+          <div class="mx-clear-prompt" id="mxClearPromptText">Clear all collected Multi-Copy selections?</div>
+          <p class="mx-clear-notice">Only temporary Multi-Copy selections will be cleared. Chatbot history and saved chats will NOT be touched.</p>
+          <div class="mx-clear-actions">
+            <button type="button" class="mx-btn-sub-cancel" id="mxCancelClearBtn">Cancel</button>
+            <button type="button" class="mx-btn-sub-danger" id="mxConfirmClearBtn">🗑 Clear</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subpanel 3: Generate Reply -->
+      <div class="mx-action-subpanel" id="mxReplySubpanel" style="display:none;">
+        <div class="mx-subpanel-title" style="margin-bottom:6px;">
+          <strong>✍ Generate Reply</strong>
+          <span style="font-size:11px;color:#8FA6B8;">Craft context-aware reply to selected message</span>
+        </div>
+        <div class="mx-form-group">
+          <label class="mx-form-label">Tone:</label>
+          <select class="mx-form-select" id="mxReplyToneSelect">
+            <option value="Professional" selected>Professional</option>
+            <option value="Friendly">Friendly</option>
+            <option value="Casual">Casual</option>
+            <option value="Concise">Concise</option>
+            <option value="Formal">Formal</option>
+          </select>
+        </div>
+        <div class="mx-form-group" style="margin-top:6px;">
+          <label class="mx-form-label">Optional instruction:</label>
+          <input type="text" class="mx-form-input" id="mxReplyInstructionInput" placeholder="e.g. Agree and propose meeting Thursday at 2 PM..." />
+        </div>
+        <button type="button" class="mx-generate-btn" id="mxRunGenerateReplyBtn">✍ Generate Reply</button>
+      </div>
+
+      <!-- Subpanel 4: Translate -->
+      <div class="mx-action-subpanel" id="mxTranslateSubpanel" style="display:none;">
+        <div class="mx-subpanel-title" style="margin-bottom:6px;">
+          <strong>🌐 Translate</strong>
+          <span style="font-size:11px;color:#8FA6B8;">Translate selected text or multi-copy context</span>
+        </div>
+        <div class="mx-form-group">
+          <label class="mx-form-label">Translate to:</label>
+          <select class="mx-form-select" id="mxTargetLangSelect">
+            <option value="English" selected>English</option>
+            <option value="Spanish">Spanish (Español)</option>
+            <option value="French">French (Français)</option>
+            <option value="German">German (Deutsch)</option>
+            <option value="Chinese">Chinese (Mandarin)</option>
+            <option value="Japanese">Japanese (日本語)</option>
+            <option value="Hindi">Hindi (हिन्दी)</option>
+            <option value="Arabic">Arabic (العربية)</option>
+            <option value="Russian">Russian (Русский)</option>
+            <option value="Portuguese">Portuguese (Português)</option>
+            <option value="Italian">Italian (Italiano)</option>
+            <option value="Korean">Korean (한국어)</option>
+            <option value="Dutch">Dutch (Nederlands)</option>
+            <option value="Turkish">Turkish (Türkçe)</option>
+          </select>
+        </div>
+        <button type="button" class="mx-generate-btn" id="mxRunTranslateBtn">🌐 Translate</button>
+      </div>
+    </div>
+
+    <!-- Card 4: Active Tab Context & Status Card -->
+    <div class="mx-card mx-status-card">
+      <div class="mx-status-header">
+        <div class="mx-status-title" id="mxStatusTitle">Status: Ready. Press Trigger for text flow.</div>
+        <div class="mx-status-actions">
+          <button class="mx-copy-btn" id="mxCopyBtn" style="display:none;">📋 Copy</button>
+          <button class="mx-action-tool-btn" id="mxRegenBtn" style="display:none;" title="Regenerate this answer">🔄 Regenerate</button>
+          <button class="mx-action-tool-btn" id="mxEditResultBtn" style="display:none;" title="Edit before copying">✏ Edit</button>
+          <button class="mx-action-tool-btn" id="mxChangeLangBtn" style="display:none;" title="Translate to different language">🌐 Change Language</button>
+          <button class="mx-copy-to-chat-btn" id="mxCopyToChatBtn" style="display:none;" title="Open in separate Chatbot popup with full history">💬 Copy to Chatbot</button>
+        </div>
+      </div>
+      <div class="mx-context-preview" id="mxContextPreview">Loading active tab context...</div>
+      <div class="mx-result-body" id="mxResultBody"></div>
+    </div>
+  </div>
+
+  <!-- Dedicated Full Chatbot View (Activated via Copy to Chatbot or Open AI Chatbot) -->
+  <div class="popup-chatbot-view" id="popupChatbotView" style="display:none;">
+    <div class="chatbot-header">
+      <div class="chatbot-brand">
+        <button class="chatbot-back-btn" id="chatbotBackBtn" title="Back to Console">← Back</button>
+        <span class="chatbot-title">Corsiri AI Chatbot</span>
+      </div>
+      <div class="chatbot-header-actions">
+        <button class="chatbot-icon-btn" id="chatbotNewChatBtn" title="Start new conversation">+ New</button>
+        <button class="chatbot-icon-btn" id="chatbotHistoryBtn" title="Toggle conversation history">🕘 History <span class="chatbot-btn-badge" id="chatbotHeaderBadge" style="display:none;">0</span></button>
+        <button class="chatbot-icon-btn" id="chatbotClearBtn" title="Clear current chat">🗑 Clear</button>
+      </div>
+    </div>
+    <!-- History Toggle Menu / Pop-up Panel -->
+    <div class="chatbot-history-panel" id="chatbotHistoryPanel" style="display:none;">
+      <div class="history-panel-header">
+        <div class="history-panel-title">
+          <span>🕘 Conversation History</span>
+          <span class="history-badge" id="historyBadge">0</span>
+        </div>
+        <div class="history-panel-actions">
+          <button class="history-action-btn" id="historyNewChatBtn" title="Start new conversation">+ New</button>
+          <button class="history-close-btn" id="historyCloseBtn" title="Close history">✕</button>
+        </div>
+      </div>
+      <div class="history-items-list" id="historyItemsList"></div>
+      <div class="history-panel-footer">
+        <button class="history-clear-all-btn" id="historyClearAllBtn">🗑 Clear All History</button>
+      </div>
+    </div>
+    <div class="chatbot-ref-banner" id="chatbotRefBanner" style="display:none;">
+      <span class="chatbot-ref-text" id="chatbotRefText">📌 Context: Loaded</span>
+      <button class="chatbot-ref-dismiss" id="chatbotRefDismiss">✕</button>
+    </div>
+    <div class="chatbot-messages-list" id="chatbotMessagesList">
+      <div id="chatbotWelcomeMsg" style="text-align: center; color: #8FA6B8; font-size: 12.5px; padding: 26px 10px;">
+        <div style="font-size: 26px; margin-bottom: 6px;">💬</div>
+        <strong style="color: #5EEBFF; font-size: 13.5px;">Corsiri AI Chatbot</strong>
+        <p style="margin-top: 4px; font-size: 11.5px;">Ask questions or explore concepts in detail. Multi-turn conversation history is maintained.</p>
+      </div>
+    </div>
+    <div class="chatbot-footer">
+      <div class="chatbot-input-row">
+        <textarea class="chatbot-textarea" id="chatbotInput" rows="1" placeholder="Ask follow-up question or chat..."></textarea>
+        <button class="chatbot-send-btn" id="chatbotSendBtn">➤</button>
+      </div>
+      <div class="chatbot-hint">Shift + Enter for new line • Enter to send</div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

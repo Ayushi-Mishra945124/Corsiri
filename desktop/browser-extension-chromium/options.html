@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Corsiri AI — Extension Settings</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <div class="settings-container">
+    <!-- Header -->
+    <header class="settings-header">
+      <div class="header-left">
+        <div class="logo-mark"></div>
+        <div>
+          <h1>Corsiri AI Settings</h1>
+          <p class="subtitle">Configure your Groq Cloud LLM engine and in-page assistance preferences</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <span id="connectionBadge" class="status-badge checking">Checking...</span>
+      </div>
+    </header>
+
+    <!-- Main Settings Form -->
+    <main class="settings-main">
+      <!-- LLM Engine Card -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">⚡</span>
+          <div>
+            <h2>Groq Cloud LLM Configuration</h2>
+            <p class="card-desc">Corsiri queries Groq's high-speed inference LPU directly from your browser.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="apiKey">Groq API Key</label>
+          <div class="input-with-toggle">
+            <input type="password" id="apiKey" placeholder="gsk_..." autocomplete="off" />
+            <button type="button" id="toggleKeyVisibility" class="btn-secondary" title="Show/Hide API Key">👁 Show</button>
+          </div>
+          <small class="field-hint">Your API key is stored securely in your browser's local encrypted storage.</small>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="modelSelect">Primary Model</label>
+            <select id="modelSelect">
+              <option value="openai/gpt-oss-120b">openai/gpt-oss-120b (Recommended - Deep reasoning)</option>
+              <option value="openai/gpt-oss-20b">openai/gpt-oss-20b (Ultra fast)</option>
+              <option value="qwen/qwen3.8-27b">qwen/qwen3.8-27b (High accuracy)</option>
+              <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile (Versatile)</option>
+              <option value="meta-llama/llama-4-scout-17b-preview">meta-llama/llama-4-scout-17b-preview</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="temperature">Creativity (Temperature: <span id="tempValue">0.3</span>)</label>
+            <input type="range" id="temperature" min="0.0" max="1.0" step="0.05" value="0.3" />
+            <div class="range-labels">
+              <span>0.0 (Precise & Analytical)</span>
+              <span>1.0 (Creative)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-action-row">
+          <button type="button" id="testConnectionBtn" class="btn-secondary">⚡ Test Groq Connection</button>
+          <span id="testResult" class="test-result-text"></span>
+        </div>
+      </section>
+
+      <!-- In-Page Floating Assistant Card -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">🎯</span>
+          <div>
+            <h2>In-Page Selection Assistant</h2>
+            <p class="card-desc">Control how Corsiri appears when selecting text on web pages.</p>
+          </div>
+        </div>
+
+        <div class="toggle-group">
+          <div class="toggle-info">
+            <span class="toggle-title">Show Floating Pill on Text Selection</span>
+            <span class="toggle-desc">Automatically display the Corsiri pill whenever 2 or more characters are highlighted.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="enableFloatingTrigger" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="toggle-group">
+          <div class="toggle-info">
+            <span class="toggle-title">✨ Smooth Window Emergence from Text</span>
+            <span class="toggle-desc">Smoothly expand and emerge the AI window from the selected text instead of popping up instantly.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="enableTextEmergeAnimation" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="toggle-group">
+          <div class="toggle-info">
+            <span class="toggle-title">Right-Click Context Menu</span>
+            <span class="toggle-desc">Add "Corsiri: Explain", "Solve & Formulas", and "Summarize" to your browser's right-click menu.</span>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="enableContextMenu" checked>
+            <span class="slider round"></span>
+          </label>
+        </div>
+
+        <div class="form-group" style="margin-top: 16px;">
+          <label for="defaultAction">Default Action for Floating Pill</label>
+          <select id="defaultAction">
+            <option value="explain">Explain (Detailed breakdown)</option>
+            <option value="solve">Solve & Formulas (Mathematical / scientific steps)</option>
+            <option value="summarize">Summarize (Key points & takeaways)</option>
+            <option value="key_points">Key Points (Core rules & exam definitions)</option>
+            <option value="rewrite">Polish & Rewrite (Clarity enhancement)</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- 🎨 Popup & Console Personalization Card -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">🎨</span>
+          <div>
+            <h2>Popup &amp; Console Personalization</h2>
+            <p class="card-desc">Customize Cursiv's size, placement, theme, default actions, and intelligence behaviors.</p>
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="popupSize">Popup Window Size</label>
+            <select id="popupSize">
+              <option value="standard">Standard (440px width - Default)</option>
+              <option value="compact">Compact (350px width - Minimal)</option>
+              <option value="large">Large (560px width - Spacious)</option>
+              <option value="expanded">Expanded (760px width - Wide view)</option>
+            </select>
+            <small class="field-hint">Controls the initial width of floating and toolbar popups.</small>
+          </div>
+
+          <div class="form-group">
+            <label for="popupPosition">Popup Window Position</label>
+            <select id="popupPosition">
+              <option value="smart">Smart (Near selection - Default)</option>
+              <option value="center">Center of Screen</option>
+              <option value="top-right">Top Right Corner</option>
+              <option value="bottom-right">Bottom Right Corner</option>
+              <option value="remember">Remember Last Dragged Position</option>
+            </select>
+            <small class="field-hint">Where the console emerges when activated.</small>
+          </div>
+        </div>
+
+        <div class="form-grid-2" style="margin-top: 14px;">
+          <div class="form-group">
+            <label for="themeMode">Appearance Theme</label>
+            <select id="themeMode">
+              <option value="dark">Dark Mode (Cyberpunk Obsidian - Default)</option>
+              <option value="light">Light Mode (Frosted White Glass)</option>
+              <option value="system">Match System Theme</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="actionOrderPreset">Action Priority Order</label>
+            <select id="actionOrderPreset">
+              <option value="default">Default Context Order</option>
+              <option value="fix_first">Fix &amp; Solve First (Fix It prioritized)</option>
+              <option value="explain_first">Explain First (Concept education)</option>
+              <option value="productivity_first">Productivity &amp; Messaging First</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid-2" style="margin-top: 14px;">
+          <div class="form-group">
+            <label for="defaultTranslationLanguage">Default Translation Target</label>
+            <select id="defaultTranslationLanguage">
+              <option value="English">English</option>
+              <option value="Spanish">Spanish (Español)</option>
+              <option value="French">French (Français)</option>
+              <option value="German">German (Deutsch)</option>
+              <option value="Chinese">Chinese (中文)</option>
+              <option value="Japanese">Japanese (日本語)</option>
+              <option value="Hindi">Hindi (हिन्दी)</option>
+              <option value="Arabic">Arabic (العربية)</option>
+              <option value="Russian">Russian (Русский)</option>
+              <option value="Portuguese">Portuguese (Português)</option>
+              <option value="Italian">Italian (Italiano)</option>
+              <option value="Korean">Korean (한국어)</option>
+              <option value="Dutch">Dutch (Nederlands)</option>
+              <option value="Turkish">Turkish (Türkçe)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="defaultReplyTone">Default Reply Tone</label>
+            <select id="defaultReplyTone">
+              <option value="Professional">Professional</option>
+              <option value="Friendly">Friendly</option>
+              <option value="Casual">Casual</option>
+              <option value="Concise">Concise</option>
+              <option value="Formal">Formal</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px;">
+          <label style="display:block; margin-bottom: 8px; font-weight: 600; font-size: 13px;">Actions Shown in Context Bar</label>
+          <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; background: rgba(255,255,255,0.03); padding: 12px 14px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08);">
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowFixIt" checked> 🛠 Fix It (Smart Fix)
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowExplain" checked> ✨ Explain Concept/Code
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowDebug" checked> 🐛 Debug &amp; Refactor
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowTranslate" checked> 🌐 Translate
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowSummarize" checked> 📝 Summarize
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowReply" checked> ✍ Generate Reply
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowMultiCopy" checked> 📋 Multi-Copy
+            </label>
+            <label style="display:flex; align-items:center; gap:8px; font-size:12.5px; cursor:pointer;">
+              <input type="checkbox" id="actShowSearch" checked> 🔍 Web Search
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Keyboard Shortcuts Card -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">⌨️</span>
+          <div>
+            <h2>Keyboard Shortcuts</h2>
+            <p class="card-desc">Activate Corsiri instantly across all web pages, embedded documents, and PDFs.</p>
+          </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+            <div>
+              <strong style="color:var(--accent-cyan); font-size:14px;">Ctrl + Shift + Space</strong>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:3px;">Select text &rarr; press hotkey to immediately activate Cursiv</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="enableGlobalHotkey" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+            <div>
+              <strong style="color:#FFFFFF; font-size:14px;">Alt + C</strong>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:3px;">Open / Toggle Cursiv floating console window</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="enableConsoleToggleHotkey" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+
+          <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); padding:12px 16px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
+            <div>
+              <strong style="color:#FFFFFF; font-size:14px;">Alt + S</strong>
+              <p style="font-size:12px; color:var(--text-muted); margin-top:3px;">Snipping Tool — drag a box to capture formula/diagram from screen</p>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="enableSnipHotkey" checked>
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Microphone & Voice Access Card -->
+      <section class="card">
+        <div class="card-header">
+          <span class="card-icon">🎙️</span>
+          <div>
+            <h2>Microphone &amp; Voice Settings</h2>
+            <p class="card-desc">Configure voice recognition language, auto-listen preferences, and browser microphone access.</p>
+          </div>
+        </div>
+
+        <div class="form-grid-2" style="margin-bottom: 14px;">
+          <div class="form-group">
+            <label for="voiceLanguage">Voice Recognition Language</label>
+            <select id="voiceLanguage">
+              <option value="en-US">English (United States)</option>
+              <option value="en-GB">English (United Kingdom)</option>
+              <option value="es-ES">Spanish (Español)</option>
+              <option value="fr-FR">French (Français)</option>
+              <option value="de-DE">German (Deutsch)</option>
+              <option value="zh-CN">Chinese (Mandarin - 普通话)</option>
+              <option value="ja-JP">Japanese (日本語)</option>
+              <option value="hi-IN">Hindi (हिन्दी)</option>
+              <option value="pt-BR">Portuguese (Brasil)</option>
+              <option value="it-IT">Italian (Italiano)</option>
+              <option value="ru-RU">Russian (Русский)</option>
+              <option value="ar-SA">Arabic (العربية)</option>
+            </select>
+          </div>
+
+          <div class="toggle-group" style="margin-top: 10px;">
+            <div class="toggle-info">
+              <span class="toggle-title">Auto-Listen on Console Open</span>
+              <span class="toggle-desc">Automatically activate voice input when opening with no text.</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="voiceAutoListen">
+              <span class="slider round"></span>
+            </label>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); padding:14px 18px; border-radius:12px; border:1px solid rgba(255,255,255,0.08);">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span id="optMicBadge" style="display:inline-block; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:600; background:rgba(255,223,126,0.12); color:#FFDF7E; border:1px solid rgba(255,223,126,0.25);">Checking status...</span>
+            </div>
+            <p id="optMicDesc" style="font-size:12px; color:var(--text-muted); margin-top:5px;">Chrome requires one-time permission on an extension tab to access your microphone.</p>
+          </div>
+          <button type="button" id="optGrantMicBtn" class="btn-secondary" style="white-space:nowrap; padding:8px 16px;">🎙️ Enable Microphone</button>
+        </div>
+      </section>
+
+      <!-- Footer Buttons -->
+      <div class="footer-actions">
+        <button type="button" id="resetDefaultsBtn" class="btn-danger">Reset Defaults</button>
+        <button type="button" id="saveBtn" class="btn-primary">💾 Save Settings</button>
+      </div>
+    </main>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
